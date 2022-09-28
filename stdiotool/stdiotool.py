@@ -24,27 +24,17 @@
 
 from __future__ import annotations
 
-import logging
 import os
-import sys
-import time
-from collections.abc import Sequence
 from contextlib import contextmanager
-from pathlib import Path
 from signal import SIG_DFL
 from signal import SIGPIPE
 from signal import signal
 
 import click
-import sh
-from asserttool import ic
 from click_auto_help import AHGroup
 from clicktool import click_add_options
 from clicktool import click_global_options
 from clicktool import tv
-from mptool import mpd_enumerate
-from mptool import output
-from unmp import unmp
 
 # this should be earlier in the imports, but isort stops working
 signal(SIGPIPE, SIG_DFL)
@@ -105,76 +95,3 @@ def cli(
         verbose=verbose,
         verbose_inf=verbose_inf,
     )
-
-
-## update setup.py if changing function name
-## @click.argument("slice_syntax", type=validate_slice, nargs=1)
-# @click.command()
-# @click.argument("keys", type=str, nargs=-1)
-# @click.argument(
-#    "sysskel",
-#    type=click.Path(
-#        exists=False,
-#        dir_okay=True,
-#        file_okay=False,
-#        allow_dash=False,
-#        path_type=Path,
-#    ),
-#    nargs=1,
-#    required=True,
-# )
-# @click.option("--ipython", is_flag=True)
-# @click_add_options(click_global_options)
-# @click.pass_context
-# def cli(
-#    ctx,
-#    keys: Sequence[str],
-#    sysskel: Path,
-#    ipython: bool,
-#    verbose: bool | int | float,
-#    verbose_inf: bool,
-#    dict_output: bool,
-# ) -> None:
-#
-#    tty, verbose = tv(
-#        ctx=ctx,
-#        verbose=verbose,
-#        verbose_inf=verbose_inf,
-#    )
-#
-#    iterator: Sequence[dict | bytes] = unmp(
-#        valid_types=[
-#            dict,
-#            bytes,
-#        ],
-#        verbose=verbose,
-#    )
-#
-#    # need to send a single key, or multiple keys, if multiple keys, keys need to specified on the commandline
-#    # either way, the output is still a dict
-#
-#    index = 0
-#    _k = None
-#    for index, _mpobject, key_count in mpd_enumerate(iterator, verbose=verbose):
-#        # if index == 0:
-#        #    first_type = type(_mpobject)
-#        #    if first_type == dict:
-#        #        key_count = len(list(_mpobject.keys()))
-#        #    else:
-#        #        key_count = None
-#        if key_count > 1:
-#            assert len(keys) > 0
-#        if isinstance(_mpobject, dict):
-#            for _k, _v in _mpobject.items():
-#                break  # assume single k:v dict
-#        else:
-#            _v = Path(os.fsdecode(_mpobject)).resolve()
-#        if verbose:
-#            ic(index, _v)
-#
-#        with open(_v, "rb") as fh:
-#            path_bytes_data = fh.read()
-#
-#        output(
-#            path, reason=_mpobject, dict_output=dict_output, tty=tty, verbose=verbose
-#        )
